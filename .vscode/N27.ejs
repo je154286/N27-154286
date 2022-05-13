@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>N27 - Über uns</title>
+</head>
+<body>
+    <div class="rahmen">
+        <div class="kopf">
+            <h1>Willkommen bei der N27</h1>            
+        </div>
+        <div class="navigationsleiste">            
+            <a href="/">
+                <i class="fa fa-home fa-2x" aria-hidden="true" title="Willkommen"></i>
+            </a> --
+            <a href="/profile">
+                <i class="fa fa-user fa-2x" aria-hidden="true" title="Mein Profil"></i>
+            </a>   --
+            <a href="/about">
+                <i class="fa fa-info fa-2x" aria-hidden="true" title="Über uns"></i>
+            </a>   --
+            <a href="/login">
+                <i class="fa fa-sign-out fa-2x" title="Abmelden"></i>
+            </a>
+            <a href="/support">
+                <i class="fa fa-question-circle fa-2x" aria-hidden="true" title="Kundenberater"></i>
+        </div>
+        ----
+        if(browserAnfrage.signedCookies['istAngemeldetAls']){
+        
+            // Die About-Seite wird an den Browser gegeben:
+    
+            serverAntwort.render('about.ejs',{})
+        }else{
+    
+            // Wenn der Kunde noch nicht eigeloggt ist, soll
+            // die Loginseite an den Browser zurückgegeben werden.
+            serverAntwort.render('login.ejs', {
+                Meldung: ""
+            })
+        }         
+    })
+    ----
+    meineApp.get('/profile',(browserAnfrage, serverAntwort, next) => {              
+
+        if(browserAnfrage.signedCookies['istAngemeldetAls']){
+    
+            serverAntwort.render('profile.ejs', {
+                Vorname: kunde.Vorname,
+                Nachname: kunde.Nachname,
+                Mail: kunde.Mail,
+                Rufnummer: kunde.Rufnummer,
+                Kennwort: kunde.Kennwort,
+                Erfolgsmeldung: ""
+            })
+        }else{
+            serverAntwort.render('login.ejs',{
+                Meldung: ""
+            })
+        }          
+    })
+----
+meineApp.get('/support',(browserAnfrage, serverAntwort, next) => {              
+
+    if(browserAnfrage.signedCookies['istAngemeldetAls']){
+        serverAntwort.render('support.ejs', {
+            Vorname: kundenberater.Vorname,
+            Nachname: kundenberater.Nachname,
+            Mail: kundenberater.Mail,
+            Rufnummer: kundenberater.Rufnummer,
+            Begruessung: kundenberater.Begruessung,
+            Position: kundenberater.Position
+        })
+    }else{
+        serverAntwort.render('login.ejs',{
+            Meldung: ""
+        })
+    }              
+})
+----
+instanziierung----
+let kundenberater = new Kundenberater()
+
+// Die konkrete Instanz bekommt Eigenschaftswerte zugewiesen.
+
+kundenberater.IdKundenberater = 1
+kundenberater.Nachname = "Zimmermann"
+kundenberater.Vorname = "Franz"
+kundenberater.Mail = "zimmermann@n27.com"
+kundenberater.Rufnummer = "+49123/4567890"
+kundenberater.Begruessung = "Hallo, ich bin's, Dein Kundenberater!"
+kundenberater.Position = "Master of desaster"    
+----
+
+const express = require('express')
+const bodyParser = require('body-parser')
+const meineApp = express()
+const cookieParser = require('cookie-parser')
+const { DEC8_BIN } = require('mysql/lib/protocol/constants/charsets')
+meineApp.set('view engine', 'ejs')
+meineApp.use(express.static('public'))
+meineApp.use(bodyParser.urlencoded({extended: true}))
+meineApp.use(cookieParser('geheim'))
+
+const server = meineApp.listen(process.env.PORT || 3000, () => {
+    console.log('Server lauscht auf Port %s', server.address().port)    
+})
+----
+class Kunde{
+    constructor(){
+        this.IdKunde
+        this.Nachname
+        this.Vorname
+        this.Kennwort
+        this.Kontostand
+        this.Geburtsdatum
+        this.Mail
+        this.Rufnummer
+    }
+}
+----
+spielerMueller.Name = "Thomas Müller"
+spielerMueller.Nummer = 25
+spielerMueller.Position = "Stürmer"
+spielerMueller.Verein = "FCB"
+spielerMueller.Alter = 18
+
+if(spielerMueller.Alter >= 18){
+    spielerMueller.Volljaehrig = true
+    console.log("Der Spieler " + spielerMueller.Name + " ist volljährig.")
+}
+
+console.log(spielerMueller.Name)
+console.log(spielerMueller.Position)
+console.log("Der Spieler " + spielerMueller.Name + " hat die Nummer " + spielerMueller.Nummer + ".")
+----
+</div>
+<div class="inhaltsbereich">
+    <label><%=Begruessung%></label>
+    <h2>Kundenberater</h2>
+    <label><%=Vorname%></label>
+    <h2>Nachname</h2>    
+    <label><%=Nachname%></label> 
+    <h2>Position</h2> 
+    <label><%=Position%></label>
+    <h2>Rufnummer</h2> 
+    <label><%=Rufnummer%></label>
+    <h2>Mail</h2> 
+    <label><%=Mail%></label>
+</div>
+----
+<div class="inhaltsbereich">
+    <form method="post">
+        <label for="fname">Benutzer-ID:</label><br>
+        <input type="number" name="IdKunde"><br>
+        <label for="lname">Kennwort:</label><br>
+        <input type="password" name="Kennwort"><br><br>        
+        <button class="login" formaction="/login">Einloggen</button>
+    </form> 
+    
+</div>
